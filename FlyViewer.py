@@ -97,26 +97,48 @@ class PicPanel(QtWidgets.QWidget):
         self.lists[1].currentRowChanged.connect(updateList2)
         self.lists[2].currentRowChanged.connect(updateImage)
         self.setLayout(VB0)
-        self.setWindowTitle('Fly Viewer v. {}'.format(VERSION))
-                    
+
                 
 class Form(QtWidgets.QWidget):
     def __init__(self,parent=None):
         super(Form,self).__init__(parent)
         self.pixdir=self.getpixdir()
         self.pix=self.populatepix()
-        self.initLayout()
+        self._initMenu()
+        self._initLayout()
 
-    def initLayout(self):
+    def _initLayout(self):
         self.panels=[PicPanel(self.pix,self.pixdir,self),PicPanel(self.pix,self.pixdir,self)]
+
+        self.VB=QtWidgets.QVBoxLayout()
+        self.VB.addWidget(self._initMenu())
 
         HB0=QtWidgets.QHBoxLayout()
         HB0.addWidget(self.panels[0])
         HB0.addWidget(self.panels[1])
-            
-        self.setLayout(HB0)
-        self.setWindowTitle('Fly Viewer v. 0')
 
+        self.VB.addLayout(HB0)
+            
+        self.setLayout(self.VB)
+        self.setWindowTitle('Fly Viewer v. {}'.format(VERSION))
+
+    def _initMenu(self):
+        mbar=QtWidgets.QMenuBar() 
+        mFile=mbar.addMenu('&File')
+        mPath=QtWidgets.QAction('&Settings',self)
+        mQuit=QtWidgets.QAction('&Quit',self)
+
+        mPath.triggered.connect(self.getPath)
+        mQuit.triggered.connect(self.close)
+
+        mFile.addAction(mPath)
+        mFile.addAction(mQuit)
+
+        return mbar
+
+    def getPath(self):
+        pass
+        
     def getpixdir(self):
         with open('Settings.conf','r') as f:
             for line in f:
