@@ -121,7 +121,7 @@ class Form(QtWidgets.QWidget):
         with open('Settings.conf','r') as f:
             for line in f:
                 if line[:7]=='pixdir=':
-                    return line.split('=')[1]+'/'
+                    return line.split('=')[1][:-1]+'/'
 
     def populatepix(self):        
         pix={}
