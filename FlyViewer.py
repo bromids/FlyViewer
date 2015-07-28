@@ -3,15 +3,11 @@
 
 import sys,os
 from PyQt5 import QtWidgets,QtGui
-
-homePath='/mnt/Shmopbox'
-
-pixdir=homePath+'/Science/Thesis/Abdominal Pigmentation/'
 VERSION='0.0'
 
-def main():    
+def main():
     app=QtWidgets.QApplication(sys.argv)
-    screen=Form(pixdir)
+    screen=Form()
     screen.show()
 
     sys.exit(app.exec_())
@@ -37,9 +33,6 @@ class PicPanel(QtWidgets.QWidget):
                     if len(pix[f0][f1][f2])>1:
                         print('Warning: Ignored second file in same folder:\n\t','\n\t'.join(pix[f0][f1][f2]))
         return pix
-
-    def getCursel(self):
-        return [self.lists[0].currentItem(),self.lists[1].currentItem(),self.lists[2].currentItem()]
 
     def updateList0(self):
         self.lists[0].clear()
@@ -108,9 +101,9 @@ class PicPanel(QtWidgets.QWidget):
                     
                 
 class Form(QtWidgets.QWidget):
-    def __init__(self,pixdir='',parent=None):
+    def __init__(self,parent=None):
         super(Form,self).__init__(parent)
-        self.pixdir=pixdir
+        self.pixdir=self.getpixdir()
         self.pix=self.populatepix()
         self.initLayout()
 
@@ -124,10 +117,16 @@ class Form(QtWidgets.QWidget):
         self.setLayout(HB0)
         self.setWindowTitle('Fly Viewer v. 0')
 
-    def populatepix(self):
+    def getpixdir(self):
+        with open('Settings.conf','r') as f:
+            for line in f:
+                if line[:7]=='pixdir=':
+                    return line.split('=')[1]+'/'
+
+    def populatepix(self):        
         pix={}
-        for f0 in os.listdir(pixdir):
-            f0d=os.path.join(pixdir,f0)
+        for f0 in os.listdir(self.pixdir):
+            f0d=os.path.join(self.pixdir,f0)
             pix[f0]={}
             for f1 in os.listdir(f0d):
                 f1d=os.path.join(f0d,f1)

@@ -15,4 +15,4 @@ This program requires:
 Instructions
 ------------
 
-Configure the homePath variable to point to the directory containing all files, then run.
+Configure the pixdir variable in Settings.conf to point to the directory containing the files.
