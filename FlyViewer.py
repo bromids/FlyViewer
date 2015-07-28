@@ -7,6 +7,7 @@ from PyQt5 import QtWidgets,QtGui
 homePath='/mnt/Shmopbox'
 
 pixdir=homePath+'/Science/Thesis/Abdominal Pigmentation/'
+VERSION='0.0'
 
 def main():    
     app=QtWidgets.QApplication(sys.argv)
@@ -90,8 +91,6 @@ class PicPanel(QtWidgets.QWidget):
         self.updateList1()
         self.updateList2()
         self.updateImage()
-
-        #self.img.setPixmap(QtGui.QPixmap('/mnt/Shmopbox/Science/Thesis/Abdominal Pigmentation/Ral028/25/V3/V3_MMStack_Pos0.ome.tif'))
         
         VB0=QtWidgets.QVBoxLayout()
         HB1=QtWidgets.QHBoxLayout()
@@ -105,7 +104,7 @@ class PicPanel(QtWidgets.QWidget):
         self.lists[1].currentRowChanged.connect(updateList2)
         self.lists[2].currentRowChanged.connect(updateImage)
         self.setLayout(VB0)
-        #self.setWindowTitle('Fly Viewer v. 0')
+        self.setWindowTitle('Fly Viewer v. {}'.format(VERSION))
                     
                 
 class Form(QtWidgets.QWidget):
