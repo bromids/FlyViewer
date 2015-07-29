@@ -101,21 +101,21 @@ class PicPanel(QtWidgets.QWidget):
                 
 class Form(QtWidgets.QWidget):
     def __init__(self,parent=None):
-        super(Form,self).__init__(parent)
+        super().__init__(parent)
         if not os.path.isfile('Settings.conf'):
             QtWidgets.QMessageBox.warning(self,'No Settings.conf file found','The settings file could not be found.  Please specify the image directory.')
             self.pixdir=self.getPath()
         else:
             self.pixdir=self.getpixdir()
         self.pix=self.populatepix()
-        self._initMenu()
+        self.mbar=self._initMenu()
         self._initLayout()
 
     def _initLayout(self):
         self.panels=[PicPanel(self.pix,self.pixdir,self),PicPanel(self.pix,self.pixdir,self)]
 
         self.VB=QtWidgets.QVBoxLayout()
-        self.VB.addWidget(self._initMenu())
+        self.VB.addWidget(self.mbar)
 
         HB0=QtWidgets.QHBoxLayout()
         HB0.addWidget(self.panels[0])
