@@ -3,7 +3,7 @@
 
 import sys,os
 from PyQt5 import QtWidgets,QtGui
-VERSION='0.0'
+VERSION='0.1'
 
 def main():
     app=QtWidgets.QApplication(sys.argv)
