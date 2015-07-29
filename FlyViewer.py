@@ -102,7 +102,11 @@ class PicPanel(QtWidgets.QWidget):
 class Form(QtWidgets.QWidget):
     def __init__(self,parent=None):
         super(Form,self).__init__(parent)
-        self.pixdir=self.getpixdir()
+        if not os.path.isfile('Settings.conf'):
+            QtWidgets.QMessageBox.warning(self,'No Settings.conf file found','The settings file could not be found.  Please specify the image directory.')
+            self.pixdir=self.getPath()
+        else:
+            self.pixdir=self.getpixdir()
         self.pix=self.populatepix()
         self._initMenu()
         self._initLayout()
@@ -125,7 +129,8 @@ class Form(QtWidgets.QWidget):
     def _initMenu(self):
         mbar=QtWidgets.QMenuBar() 
         mFile=mbar.addMenu('&File')
-        mPath=QtWidgets.QAction('&Settings',self)
+        #mEdit=mbar.addMenu('&Edit')
+        mPath=QtWidgets.QAction('&Change Directory',self)
         mQuit=QtWidgets.QAction('&Quit',self)
 
         mPath.triggered.connect(self.getPath)
@@ -137,13 +142,29 @@ class Form(QtWidgets.QWidget):
         return mbar
 
     def getPath(self):
-        pass
+        confpath=QtWidgets.QFileDialog.getExistingDirectory(self,'Image Directory','/mnt/',QtWidgets.QFileDialog.ShowDirsOnly)
+        while not os.path.isdir(confpath):
+            QtWidgets.QMessageBox.warning(self,'No such directory','The image directory was not found.  Please choose a valid existing directory.')
+            confpath=QtWidgets.QFileDialog.getExistingDirectory(self,'Image Directory','/mnt/',QtWidgets.QFileDialog.ShowDirsOnly)
+        with open('Settings.conf','w') as settings:
+            settings.write('pixdir=%s'%confpath)
+        return confpath
         
     def getpixdir(self):
         with open('Settings.conf','r') as f:
             for line in f:
                 if line[:7]=='pixdir=':
-                    return line.split('=')[1][:-1]+'/'
+                    pixdir=line.split('=')[1].replace('\n','')+'/'
+        if not os.path.isdir(pixdir):
+            chdir=QtWidgets.QMessageBox.question(self,'No such directory','Settings.conf points to a nonexistant directory.  Change directory?',
+                                           QtWidgets.QMessageBox.Yes|QtWidgets.QMessageBox.No,
+                                           QtWidgets.QMessageBox.No)
+            if chdir==QtWidgets.QMessageBox.Yes:
+                return self.getPath()
+            else:
+                return self.getpixdir()
+        else:
+            return pixdir
 
     def populatepix(self):        
         pix={}
