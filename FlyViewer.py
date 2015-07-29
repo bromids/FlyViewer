@@ -129,9 +129,10 @@ class Form(QtWidgets.QWidget):
     def _initMenu(self):
         mbar=QtWidgets.QMenuBar() 
         mFile=mbar.addMenu('&File')
-        #mEdit=mbar.addMenu('&Edit')
-        mPath=QtWidgets.QAction('&Change Directory',self)
-        mQuit=QtWidgets.QAction('&Quit',self)
+        mEdit=mbar.addMenu('&Edit')
+        mPath=QtWidgets.QAction('&Change Directory',mbar)
+        mQuit=QtWidgets.QAction('&Quit',mbar)
+        mBW=QtWidgets.QAction('&Black and White',mbar,checkable=True)
 
         mPath.triggered.connect(self.getPath)
         mQuit.triggered.connect(self.close)
