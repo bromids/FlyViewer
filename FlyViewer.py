@@ -139,6 +139,7 @@ class Form(QtWidgets.QWidget):
 
         mFile.addAction(mPath)
         mFile.addAction(mQuit)
+        mEdit.addAction(mBW)
 
         return mbar
 
