@@ -3,7 +3,7 @@
 
 import sys,os
 from PyQt5 import QtWidgets,QtGui
-VERSION='0.1'
+VERSION='0.2.1'
 
 def main():
     app=QtWidgets.QApplication(sys.argv)
@@ -15,6 +15,7 @@ def main():
 class PicPanel(QtWidgets.QWidget):
     def __init__(self,pix=None,pixdir='',parent=None):
         super().__init__(parent)
+        self.BW=False
         self.cursel=[0,0,0]
         self.pix=self._populatepix(pixdir) if pix==None else pix
         self._initLayout()
@@ -56,7 +57,18 @@ class PicPanel(QtWidgets.QWidget):
                     self.lists[1].currentItem().text(),
                     self.lists[2].currentItem().text()]
         self.txt.setText(self.pix[t1][t2][t3][0])
-        limg=QtGui.QPixmap(self.pix[t1][t2][t3][0])
+        if not self.BW:
+            limg=QtGui.QPixmap(self.pix[t1][t2][t3][0])
+        else:
+            limg0=QtGui.QImage(self.pix[t1][t2][t3][0])
+            for y in range(limg0.height()):
+                for x in range(limg0.width()):
+                    color=QtGui.QColor(limg0.pixel(x,y))
+                    pcol=color.getRgb()[:-1]
+                    mn=round(sum(pcol)/3)
+                    limg0.setPixel(x,y,QtGui.QColor(mn,mn,mn).rgb())
+            limg=QtGui.QPixmap(limg0)
+            
         limg.scaledToWidth(True)
         self.img.setPixmap(limg)
         
@@ -98,6 +110,10 @@ class PicPanel(QtWidgets.QWidget):
         self.lists[2].currentRowChanged.connect(updateImage)
         self.setLayout(VB0)
 
+    def ToggleBW(self,togbool):
+        self.BW=togbool
+        self.updateImage()
+
                 
 class Form(QtWidgets.QWidget):
     def __init__(self,parent=None):
@@ -110,6 +126,10 @@ class Form(QtWidgets.QWidget):
         self.pix=self.populatepix()
         self.mbar=self._initMenu()
         self._initLayout()
+
+    def BWToggle(self,togbool):
+        self.panels[0].ToggleBW(togbool)
+        self.panels[1].ToggleBW(togbool)
 
     def _initLayout(self):
         self.panels=[PicPanel(self.pix,self.pixdir,self),PicPanel(self.pix,self.pixdir,self)]
@@ -136,6 +156,7 @@ class Form(QtWidgets.QWidget):
 
         mPath.triggered.connect(self.getPath)
         mQuit.triggered.connect(self.close)
+        mBW.triggered.connect(self.BWToggle)
 
         mFile.addAction(mPath)
         mFile.addAction(mQuit)
