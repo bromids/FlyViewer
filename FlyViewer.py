@@ -208,9 +208,9 @@ class Form(QtWidgets.QWidget):
         
         
 def splitTiff(filename):
-	""" Split slices of a multi-image Tiff """
-	im = Image.open(filename)
-	return np.array(im)
+    """ Split slices of a multi-image Tiff """
+    im = Image.open(filename)
+    return np.array(im)
         
 
 if __name__=='__main__':
