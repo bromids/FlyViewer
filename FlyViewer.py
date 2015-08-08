@@ -2,7 +2,9 @@
 # coding:utf-8
 
 import sys,os
+import numpy as np
 from PyQt5 import QtWidgets,QtGui
+import PIL import Image
 VERSION='0.2.1'
 
 def main():
@@ -203,6 +205,12 @@ class Form(QtWidgets.QWidget):
                     if len(pix[f0][f1][f2])>1:
                         print('Warning: Ignored second file in same folder:\n\t','\n\t'.join(pix[f0][f1][f2]))
         return pix
+        
+        
+def splitTiff(filename):
+	""" Split slices of a multi-image Tiff """
+	im = Image.open(filename)
+	return np.array(im)
         
 
 if __name__=='__main__':
